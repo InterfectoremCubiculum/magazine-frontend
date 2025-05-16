@@ -1,0 +1,21 @@
+<table class="table">
+    <thead>
+        <tr>
+            @for (column of columns; track $index) 
+            {
+                <th>{{ column.key }}</th>
+            }
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        @for (row of data; track $index) 
+        {
+            <tr>
+            @for (column of columns; track $index) 
+            {
+                <td>{{row[column.key]}}</td>
+            }
+            </tr>
+        }
+    </tbody>
+</table>
