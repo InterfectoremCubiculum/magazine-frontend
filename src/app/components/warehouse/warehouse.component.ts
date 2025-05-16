@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GenericTableComponent } from "../shared/generic-table/generic-table.component";
+import { GenericTableComponent } from '../../shared/generic-table/generic-table.component';
 @Component({
   selector: 'app-warehouse',
   imports: [GenericTableComponent],
