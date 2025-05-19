@@ -1,33 +1,100 @@
-<div>
-    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addWarehouse">Add warehouse</button>
-    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteWarehouse">Delete warehouse</button>
-</div>
-<app-generic-table [data]="warehouseData" [columns]="warehouseColumns"/>
+<p-toolbar styleClass="mb-2">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" class="me-2" (onClick)="openNew()" />
+        <p-button severity="danger" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedWarehouses()" [disabled]="!selectedWarehouses || !selectedWarehouses.length" />
+    </ng-template>
+</p-toolbar>
 
-<div class="modal fade" id="addWarehouse" tabindex="-1" aria-labelledby="addWarehouseModalLabel">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="addWarehouseModalLabel">New message</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="card pt-1 pb-1 ">
+  <p-table 
+    #dt
+    [value]="warehouseData" 
+    dataKey="id"
+    [loading]="loading"
+    [globalFilterFields]="['name', 'location']"
+    [rowHover]="true"
+    [sortMode]="'multiple'"
+    [(selection)]="selectedWarehouses"
+  >
+    <ng-template #caption>
+      <div class="d-flex align-items-center justify-content-between">
+          <h5 class="m-0">Manage Warehouses</h5>
+          <p-iconfield iconPosition="left" class="ml-auto">
+              <p-inputicon>
+                  <i class="pi pi-search"></i>
+              </p-inputicon>
+              <input
+                  pInputText
+                  type="text"
+                  (input)="onGlobalFilter($event, dt)"
+                  placeholder="Search keyword"
+              />
+          </p-iconfield>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="mb-3">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <input type="text" class="form-control" id="recipient-name">
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary">Create</button>
-      </div>
-    </div>
-  </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+            <p-tableHeaderCheckbox />
+        </th>
+        @for (col of warehouseColumns; track $index) 
+        {
+          <th pSortableColumn="{{ col.key }}">
+            {{ col.label }}
+            <p-sortIcon field="{{ col.key }}"></p-sortIcon>
+            <p-columnFilter
+              [type]="col.key === 'id' ? 'numeric' : 'text'"
+              [field]="col.key"
+              [placeholder]="'Search by ' + col.label"
+              [ariaLabel]="'Filter ' + col.label"
+              display="menu"
+            >
+            </p-columnFilter>
+
+          </th>
+        }
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData>
+      <tr>
+        <td >
+            <p-tableCheckbox [value]="rowData"/>
+        </td>
+        @for (col of warehouseColumns; track $index) 
+        {
+          <td>
+          {{ rowData[col.key] }}
+          </td>
+        }
+        <td style="width: 3rem;">
+          <p-button icon="pi pi-pencil" size="small" severity="secondary" [rounded]="true" [outlined]="true" (click)="editProduct(rowData)" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
+<p-dialog [(visible)]="warehouseDialog" [style]="{ width: '450px' }" header="Warehouses Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-3">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="warehouse.name" required autofocus fluid />
+                <small class="text-danger" *ngIf="submitted && !warehouse.name">Name is required.</small>
+            </div>
+            <div>
+                <label for="name" class="block font-bold mb-3">Location</label>
+                <input type="text" pInputText id="name" [(ngModel)]="warehouse.location" required autofocus fluid />
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveWarehouse()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast />

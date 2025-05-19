@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { Warehouse } from '../interfaces/Warehouse';
-import { CreateWarehouseDto } from '../dtos/warehouse/create-warehouse.dto';
+import { WarehouseDto } from '../dtos/warehouse/warehouse.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class WarehouseService {
     );
   }
 
-  addWarehouse(warehouse: CreateWarehouseDto): Observable<Warehouse> {
+  addWarehouse(warehouse: WarehouseDto): Observable<Warehouse> {
     return this.http.post<Warehouse>(this.warehousesUrl, warehouse).pipe(
       catchError((error) => {
         return throwError(() => new Error('Failed to add warehouse'));
@@ -33,7 +33,11 @@ export class WarehouseService {
     if (!warehouse.id) {
       return throwError(() => new Error('Warehouse ID is required'));
     }
-    return this.http.put<Warehouse>(`${this.warehousesUrl}/${warehouse.id}`, warehouse).pipe(
+    const warehouseDto: WarehouseDto = {
+      name: warehouse.name,
+      location: warehouse.location
+    };
+    return this.http.put<Warehouse>(`${this.warehousesUrl}/${warehouse.id}`, warehouseDto).pipe(
       catchError((error) => {
         return throwError(() => new Error('Failed to update warehouse'));
       })
