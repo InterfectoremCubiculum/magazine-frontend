@@ -2,18 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
-
-export interface Warehouse {
-  id: number;
-  name: string;
-  location?: string;
-}
-
-const API_BASE_URL = '/api';
+import { Warehouse } from '../interfaces/Warehouse';
+import { CreateWarehouseDto } from '../dtos/warehouse/create-warehouse.dto';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class WarehouseService {
   private http = inject(HttpClient);
   private warehousesUrl = `${environment.apiBaseUrl}/warehouses`;
@@ -26,7 +21,7 @@ export class WarehouseService {
     );
   }
 
-  addWarehouse(warehouse: Warehouse): Observable<Warehouse> {
+  addWarehouse(warehouse: CreateWarehouseDto): Observable<Warehouse> {
     return this.http.post<Warehouse>(this.warehousesUrl, warehouse).pipe(
       catchError((error) => {
         return throwError(() => new Error('Failed to add warehouse'));
