@@ -1,0 +1,129 @@
+<p-toolbar styleClass="mb-2">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" class="me-2" (onClick)="openNew()" />
+        <p-button severity="danger" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedInvoices()"
+            [disabled]="!selectedInvoices || !selectedInvoices.length" />
+    </ng-template>
+</p-toolbar>
+
+<div class="card pt-1 pb-1">
+    <p-table #dt [value]="invoices" dataKey="id" [loading]="loading"
+        [globalFilterFields]="['customer.name', 'issueDate', 'saleDate', 'paymentDueDate', 'paymentMethod']"
+        [rowHover]="true" [sortMode]="'multiple'" [(selection)]="selectedInvoices">
+        <ng-template #caption>
+            <div class="d-flex align-items-center justify-content-between">
+                <h5 class="m-0">Manage Invoices</h5>
+                <p-iconfield iconPosition="left" class="ml-auto">
+                    <p-inputicon>
+                        <i class="pi pi-search"></i>
+                    </p-inputicon>
+                    <input pInputText type="text" (input)="onGlobalFilter($event, dt)" placeholder="Search keyword" />
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox />
+                </th>
+                <th pSortableColumn="id">
+                    ID
+                    <p-sortIcon field="id"></p-sortIcon>
+                    <p-columnFilter type="numeric" field="id" placeholder="Search by ID" ariaLabel="Filter ID"
+                        display="menu"></p-columnFilter>
+                </th>
+                <th pSortableColumn="customer.name">
+                    Customer
+                    <p-sortIcon field="customer.name"></p-sortIcon>
+                    <p-columnFilter type="text" field="customer.name" placeholder="Search by Customer"
+                        ariaLabel="Filter Customer" display="menu"></p-columnFilter>
+                </th>
+                <th pSortableColumn="issueDate">
+                    Issue Date
+                    <p-sortIcon field="issueDate"></p-sortIcon>
+                    <p-columnFilter type="text" field="issueDate" placeholder="Search by Issue Date"
+                        ariaLabel="Filter Issue Date" display="menu"></p-columnFilter>
+                </th>
+                <th pSortableColumn="saleDate">
+                    Sale Date
+                    <p-sortIcon field="saleDate"></p-sortIcon>
+                    <p-columnFilter type="text" field="saleDate" placeholder="Search by Sale Date"
+                        ariaLabel="Filter Sale Date" display="menu"></p-columnFilter>
+                </th>
+                <th pSortableColumn="paymentDueDate">
+                    Payment Due Date
+                    <p-sortIcon field="paymentDueDate"></p-sortIcon>
+                    <p-columnFilter type="text" field="paymentDueDate" placeholder="Search by Payment Due Date"
+                        ariaLabel="Filter Payment Due Date" display="menu"></p-columnFilter>
+                </th>
+                <th pSortableColumn="paymentMethod">
+                    Payment Method
+                    <p-sortIcon field="paymentMethod"></p-sortIcon>
+                    <p-columnFilter type="text" field="paymentMethod" placeholder="Search by Payment Method"
+                        ariaLabel="Filter Payment Method" display="menu"></p-columnFilter>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="rowData" />
+                </td>
+                <td>{{ rowData.id }}</td>
+                <td>{{ rowData.customer?.name }}</td>
+                <td>{{ rowData.issueDate | date:'yyyy-MM-dd' }}</td>
+                <td>{{ rowData.saleDate | date:'yyyy-MM-dd' }}</td>
+                <td>{{ rowData.paymentDueDate | date:'yyyy-MM-dd' }}</td>
+                <td>{{ rowData.paymentMethod }}</td>
+                <td style="width: 3rem;">
+                    <p-button icon="pi pi-pencil" size="small" severity="secondary" [rounded]="true" [outlined]="true"
+                        (click)="editInvoice(rowData)" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="invoiceDialog" [style]="{ width: '450px' }" header="Invoice Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="customer" class="block font-bold mb-3">Customer</label>
+                <p-dropdown [options]="customers" optionLabel="name" optionValue="id" [(ngModel)]="invoice.customer.id"
+                    placeholder="Select a customer" inputId="customer" required>
+                </p-dropdown>
+                <small class="text-danger" *ngIf="submitted && !invoice.customer?.id">Customer is required.</small>
+            </div>
+                        <div>
+                <label for="paymentMethod" class="block font-bold mb-3">Payment Method</label>
+                <p-dropdown [options]="paymentMethods" [(ngModel)]="invoice.paymentMethod"
+                    placeholder="Select a payment method" inputId="paymentMethod" required>
+                </p-dropdown>
+                <small class="text-danger" *ngIf="submitted && !invoice.paymentMethod">Payment method is
+                    required.</small>
+            </div>
+            <div>
+                <label for="issueDate" class="block font-bold mb-3">Issue Date</label>
+                <input type="date" pInputText id="issueDate" [(ngModel)]="invoice.issueDate" required />
+            </div>
+            <div>
+                <label for="saleDate" class="block font-bold mb-3">Sale Date</label>
+                <input type="date" pInputText id="saleDate" [(ngModel)]="invoice.saleDate" required />
+            </div>
+            <div>
+                <label for="paymentDueDate" class="block font-bold mb-3">Payment Due Date</label>
+                <input type="date" pInputText id="paymentDueDate" [(ngModel)]="invoice.paymentDueDate" required />
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveInvoice()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast />
