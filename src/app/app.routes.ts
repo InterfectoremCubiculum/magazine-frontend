@@ -3,6 +3,7 @@ import { HomeComponent } from './components/home/home.component';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { CategoryComponent } from './components/category/category.component';
 import { InvoiceComponent } from './components/invoice/invoice.component';
+import { ProductComponent } from './components/product/product.component';
 
 
 export const routes: Routes = [
@@ -10,4 +11,5 @@ export const routes: Routes = [
     { path: 'warehouse', component: WarehouseComponent },
     { path: 'category', component: CategoryComponent },
     { path: 'invoice', component: InvoiceComponent },
+    { path: 'product', component: ProductComponent },
 ];

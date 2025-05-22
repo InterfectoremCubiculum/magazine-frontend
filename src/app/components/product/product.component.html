@@ -1,0 +1,61 @@
+<div class="card ps-1 pe-1">
+    <p-dataview 
+        [loading]="loading"
+        [lazy]="true"
+        [value]="products()" 
+        [rowsPerPageOptions]="[10, 20, 30]"      
+        [totalRecords]="totalElements"
+        [rows]="rows" 
+        [paginator]="true"
+        (onLazyLoad)="onPageChange($event)"
+    >
+        <ng-template #header>
+            <div>
+                <p-select
+                    [showClear]="true"
+                    class="ms-2"
+                    [options]="sortOptions"
+                    placeholder="Sort By Price"
+                    (onChange)="onSortChange($event)"
+                />
+                <p-select
+                    [showClear]="true"
+                    [filter]="true"
+                    class="ms-2"
+                    [options]="categories"
+                    placeholder="Filtr by Category"
+                    (onChange)="onCategoryChange($event)"
+                />
+            </div>
+        </ng-template>
+        <ng-template #list let-items>
+            <div class="row me-3 ms-3 mt-1 mb-2">
+                <div class="mt-4 mb-2" *ngFor="let item of items; let first = first">
+                    <div class="pt-3 d-flex" [ngClass]="{'border-top': !first}">
+                        <div class="img-size me-3">
+                            <img 
+                                src="https://primefaces.org/cdn/primeng/images/demo/product/bracelet.jpg" 
+                                alt="item.name"
+                                class="img-fluid rounded"
+                            >
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="m-0 category-size text-body-secondary">{{item.category.name}}</span>
+                            <p class="m-0 fs-5 fw-semibold">{{item.name}}</p>
+                            <p class="text-wrap">{{item.description}}</p>
+                        </div>
+                        <div class="ms-auto price-size">
+                            <p class="text-end fw-semibold">{{item.price+' zł'}}</p>
+                            <div>
+                                <p-button
+                                    icon="pi pi-shopping-cart "
+                                    label="Buy Now"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dataview>
+</div>
