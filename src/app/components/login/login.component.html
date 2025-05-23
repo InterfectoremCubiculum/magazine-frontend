@@ -1,0 +1,66 @@
+<div class="login-container">
+  <p-card header="Login" [style]="{'width': '400px', 'margin': '2rem auto'}">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <p-message
+        *ngIf="errorMessage"
+        severity="error"
+        [text]="errorMessage"
+        styleClass="w-100 mb-3">
+      </p-message>
+
+      <div class="field mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          pInputText
+          id="username"
+          formControlName="username"
+          placeholder="Enter your username"
+          class="w-100"
+          [class.ng-invalid]="isFieldInvalid('username')"
+        />
+        <small
+          *ngIf="isFieldInvalid('username')"
+          class="text-danger">
+          {{ getFieldError('username') }}
+        </small>
+      </div>
+
+      <div class="field mb-3">
+        <label for="password" class="form-label">Password</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          placeholder="Enter your password"
+          styleClass="w-100"
+          [feedback]="false"
+          [toggleMask]="true"
+          [class.ng-invalid]="isFieldInvalid('password')">
+        </p-password>
+        <small
+          *ngIf="isFieldInvalid('password')"
+          class="text-danger">
+          {{ getFieldError('password') }}
+        </small>
+      </div>
+
+      <div class="field text-center">
+        <p-button
+          type="submit"
+          label="Login"
+          [loading]="loading"
+          [disabled]="loading"
+          styleClass="w-100">
+        </p-button>
+      </div>
+
+      <div class="text-center mt-3">
+        <p>
+          Don't have an account?
+          <a routerLink="/register" class="text-primary">Register here</a>
+        </p>
+      </div>
+
+    </form>
+  </p-card>
+</div>
