@@ -3,18 +3,19 @@ import { DataView } from 'primeng/dataview';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
-import { signal } from '@angular/core';
 import { Product } from '../../interfaces/Product';
 import { ProductService } from '../../services/product.service';
-import { SelectItem, SelectModule } from 'primeng/select';
+import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
-import { Category } from '../../interfaces/Category';
 import { CategoryService } from '../../services/category.service';
+import { BadgeModule } from 'primeng/badge';
+import { Router } from '@angular/router';
+import { ShoppingService } from '../../services/shopping.service';
 
 @Component({
   selector: 'app-product',
-  imports: [DataView, ButtonModule, CommonModule, DropdownModule, SelectModule, FormsModule],
+  imports: [DataView, ButtonModule, CommonModule, DropdownModule, SelectModule, FormsModule, BadgeModule],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
 })
@@ -29,9 +30,16 @@ export class ProductComponent {
   page: number = 0;
   totalElements: number = 0;
   totalPages: number = 0;
-  products = signal<Product[]>([]);
+  products: Product[] = [];
+  productsIdInCard: number[] = [];
+  elementsInCart = 0;
 
-  constructor(private productService: ProductService, private categoryService: CategoryService) {}
+  constructor(
+    private productService: ProductService, 
+    private categoryService: CategoryService, 
+    private router: Router,
+    private shoppingService: ShoppingService
+  ) {}
   
   ngOnInit(): void {
     this.sortOptions = [
@@ -42,6 +50,7 @@ export class ProductComponent {
     ];
 
     this.getCategories();
+    this.loadCartFromStorage();
   }
 
   getCategories(): void {
@@ -53,6 +62,7 @@ export class ProductComponent {
         }));
       }})
   }
+
   getProducts(page: number, size: number): void {
     let params = new HttpParams()
       .set('page', page)
@@ -70,7 +80,7 @@ export class ProductComponent {
     this.productService.getProductsPagination(params).subscribe({
       next: (data) => {
         console.log('Products:', data);
-        this.products.set(data.content);
+        this.products = data.content;
         this.totalElements = data.totalElements;
         this.totalPages = data.totalPages;
         this.page = data.number;
@@ -110,5 +120,32 @@ export class ProductComponent {
       this.selectedCategory = null;
     }
     this.getProducts(0, this.rows);
+  }
+  onAddToCart(product: Product) {
+    this.elementsInCart++;
+    this.productsIdInCard.push(product.id);
+    this.shoppingService.addToStorage({
+      product: product,
+      quantity: 1
+    });
+  }
+  onRemoveFromCart(product: Product) {
+    this.elementsInCart--;
+    const index = this.productsIdInCard.indexOf(product.id);
+    if (index > -1) {
+      this.productsIdInCard.splice(index, 1);
+    }
+
+    this.shoppingService.removeFromStorage(product.id);
+  }
+  
+  onListView() {
+    this.router.navigate(['/shopping-list']);
+  }
+
+  loadCartFromStorage() {
+    const cart = this.shoppingService.getList();
+    this.elementsInCart = cart.length;
+    this.productsIdInCard = cart.map(item => item.product.id);
   }
 }

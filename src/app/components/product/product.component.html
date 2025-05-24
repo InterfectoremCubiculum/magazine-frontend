@@ -2,30 +2,41 @@
     <p-dataview 
         [loading]="loading"
         [lazy]="true"
-        [value]="products()" 
+        [value]="products" 
         [rowsPerPageOptions]="[10, 20, 30]"      
         [totalRecords]="totalElements"
         [rows]="rows" 
         [paginator]="true"
         (onLazyLoad)="onPageChange($event)"
     >
-        <ng-template #header>
-            <div>
-                <p-select
-                    [showClear]="true"
-                    class="ms-2"
-                    [options]="sortOptions"
-                    placeholder="Sort By Price"
-                    (onChange)="onSortChange($event)"
-                />
-                <p-select
-                    [showClear]="true"
-                    [filter]="true"
-                    class="ms-2"
-                    [options]="categories"
-                    placeholder="Filtr by Category"
-                    (onChange)="onCategoryChange($event)"
-                />
+        <ng-template #header >
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p-select
+                        [showClear]="true"
+                        class="ms-2"
+                        [options]="sortOptions"
+                        placeholder="Sort By Price"
+                        (onChange)="onSortChange($event)"
+                    />
+                    <p-select
+                        [showClear]="true"
+                        [filter]="true"
+                        class="ms-2"
+                        [options]="categories"
+                        placeholder="Filtr by Category"
+                        (onChange)="onCategoryChange($event)"
+                    />
+                </div>
+                <div class="me-3">     
+                    <p-button 
+                        severity="secondary"
+                        label="Shop list" 
+                        icon="pi pi-shopping-cart " 
+                        label="Shop list" badge="{{elementsInCart}}" 
+                        (onClick)="onListView()"
+                    />
+                </div>
             </div>
         </ng-template>
         <ng-template #list let-items>
@@ -47,10 +58,21 @@
                         <div class="ms-auto price-size">
                             <p class="text-end fw-semibold">{{item.price+' zł'}}</p>
                             <div>
-                                <p-button
-                                    icon="pi pi-shopping-cart "
-                                    label="Buy Now"
-                                />
+                                @if (productsIdInCard.includes(item.id)) {
+                                        <p-button
+                                            icon="pi pi-shopping-cart "
+                                            (onClick)="onRemoveFromCart(item)"
+                                            label="Remove from Cart"
+                                            severity="danger"
+                                        />
+                                    }
+                                    @else {
+                                        <p-button
+                                            icon="pi pi-shopping-cart "
+                                            (onClick)="onAddToCart(item)"
+                                            label="Buy Now"
+                                        />
+                                    }
                             </div>
                         </div>
                     </div>

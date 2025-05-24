@@ -6,6 +6,7 @@ import { InvoiceComponent } from './components/invoice/invoice.component';
 import { ProductComponent } from './components/product/product.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ShoppingListComponent } from './components/shopping-list/shopping-list.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -15,4 +16,5 @@ export const routes: Routes = [
     { path: 'category', component: CategoryComponent },
     { path: 'invoice', component: InvoiceComponent },
     { path: 'product', component: ProductComponent },
+    { path: 'shopping-list', component: ShoppingListComponent }
 ];
