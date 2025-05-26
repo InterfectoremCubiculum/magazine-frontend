@@ -40,7 +40,8 @@ export class RegisterComponent {
 
   roleOptions = [
     { label: 'User', value: 'USER' },
-    { label: 'Admin', value: 'ADMIN' }
+    { label: 'Admin', value: 'ADMIN' },
+    { label: 'Employee', value: 'EMPLOYEE' }
   ];
 
   constructor() {
@@ -82,7 +83,6 @@ export class RegisterComponent {
         next: (response) => {
           this.loading = false;
           this.successMessage = 'Registration successful! Redirecting to home...';
-          console.log('Registration successful:', response);
 
           setTimeout(() => {
             this.router.navigate(['/']);
@@ -91,7 +91,6 @@ export class RegisterComponent {
         error: (error) => {
           this.loading = false;
           this.errorMessage = 'Registration failed. Please try again.';
-          console.error('Registration error:', error);
         }
       });
     } else {

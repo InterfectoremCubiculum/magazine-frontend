@@ -6,6 +6,10 @@ import { CommonModule } from '@angular/common';
 import { InputNumber } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { OrderService } from '../../services/order.service';
+import { CreateOrderRequestDto } from '../../dtos/order/CreateOrderRequestDto';
+import { Product } from '../../interfaces/Product';
+import { ProductOrderDto } from '../../dtos/order/ProductOrderDto';
 
 @Component({
   selector: 'app-shopping-list',
@@ -15,7 +19,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class ShoppingListComponent {
 
-  constructor(private shoppingService: ShoppingService) {}
+  constructor(private shoppingService: ShoppingService, private orderService: OrderService) {}
   products: any[] = [];
   cols: any[] = [];
   
@@ -43,7 +47,28 @@ export class ShoppingListComponent {
   }
 
   onMakeOrder() {
-    throw new Error('Method not implemented.');
+    let request: CreateOrderRequestDto = new CreateOrderRequestDto();
+    let productsInOrder: ProductOrderDto[] = [];
+    this.shoppingList.forEach(item => {
+      let productOrder: ProductOrderDto = new ProductOrderDto();
+      productOrder.productId = item.product.id;
+      productOrder.quantity = item.quantity;
+      productOrder.unitPrice = item.product.price;
+      productsInOrder.push(productOrder);
+    });
+
+    request.products = productsInOrder;
+    request.customerId = 1; // Assuming a static customer ID for this example
+    this.orderService.makeOrder(request).subscribe({
+      next: (response) => {
+        this.shoppingService.clearList();
+        this.products = [];
+        this.totalPrice = 0;
+        this.shoppingList = [];
+      },
+      error: (error) => {
+        console.error('Error making order', error);
+      }});
   }
 
   onDeleteProduct(id: number) {
