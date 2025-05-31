@@ -8,9 +8,9 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     const expectedRoles = route.data['roles'] as string[]
-    const role = this.authService.getRole();
+    const role = await this.authService.getRole();
 
     if (expectedRoles && (!role || !expectedRoles.includes(role))) {
       this.router.navigate(['/']);

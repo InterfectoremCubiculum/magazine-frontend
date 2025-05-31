@@ -79,7 +79,6 @@ export class ProductComponent {
 
     this.productService.getProductsPagination(params).subscribe({
       next: (data) => {
-        console.log('Products:', data);
         this.products = data.content;
         this.totalElements = data.totalElements;
         this.totalPages = data.totalPages;
