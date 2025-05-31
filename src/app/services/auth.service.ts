@@ -56,6 +56,7 @@ export class AuthService {
 
   validateToken(): Observable<any> {
     const token = this.getToken();
+    console.log(token);
     if (!token) {
       return throwError(() => new Error('No token available'));
     }
@@ -69,7 +70,13 @@ export class AuthService {
       })
     );
   }
-
+  getRole() {
+    const token = this.getToken();
+    if (!token) return null;
+    return this.currentUser$.pipe(
+      map(user => user?.role || null),
+    )
+  }
   private setAuthData(authResponse: AuthResponse): void {
     localStorage.setItem(this.tokenKey, authResponse.token);
 
