@@ -70,13 +70,6 @@ export class AuthService {
       })
     );
   }
-  getRole() {
-    const token = this.getToken();
-    if (!token) return null;
-    return this.currentUser$.pipe(
-      map(user => user?.role || null),
-    )
-  }
   private setAuthData(authResponse: AuthResponse): void {
     localStorage.setItem(this.tokenKey, authResponse.token);
 
@@ -126,7 +119,12 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
+  getRole() {
+    if (!this.isLoggedIn()) return null;
+    const user = this.getCurrentUser();
+    return user ? user.role : null;
 
+  }
   isLoggedIn(): boolean {
     return !!this.getToken() && !!this.getCurrentUser();
   }
