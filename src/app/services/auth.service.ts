@@ -6,6 +6,7 @@ import { AuthResponse } from '../interfaces/AuthResponse';
 import { User } from '../interfaces/User';
 import { LoginDto } from '../dtos/auth/login.dto';
 import { RegisterDto } from '../dtos/auth/register.dto';
+import userRoles from '../enums/userRoles';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +78,7 @@ export class AuthService {
       id: authResponse.userId,
       username: authResponse.username,
       email: '',
-      role: authResponse.role as 'USER' | 'ADMIN'
+      role: authResponse.role as userRoles
     };
 
     this.currentUserSubject.next(user);
@@ -101,7 +102,7 @@ export class AuthService {
             id: response.userId,
             username: response.username,
             email: '',
-            role: response.role as 'USER' | 'ADMIN'
+            role: response.role as userRoles
           };
           this.currentUserSubject.next(user);
         },
@@ -131,10 +132,10 @@ export class AuthService {
 
   isAdmin(): boolean {
     const user = this.getCurrentUser();
-    return user?.role === 'ADMIN';
+    return user?.role === userRoles.ADMIN;
   }
 
-  hasRole(role: 'USER' | 'ADMIN'): boolean {
+  hasRole(role: userRoles ): boolean {
     const user = this.getCurrentUser();
     return user?.role === role;
   }

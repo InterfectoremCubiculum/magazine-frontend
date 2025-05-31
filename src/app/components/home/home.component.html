@@ -1,16 +1,20 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
-  <div class="col">
-    <div class="card">
-      <a routerLink="warehouse" class="nav-link">
-        <img src="batman.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Warehouse</h5>
-          <p class="card-text">Simple menu to manipulate warehouses.</p>
-        </div>
-      </a>
+  @if (
+    role === 'ADMIN' ||
+    role === 'EMPLOYEE'
+  ) {
+    <div class="col">
+      <div class="card">
+        <a routerLink="warehouse" class="nav-link">
+          <img src="batman.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Warehouse</h5>
+            <p class="card-text">Simple menu to manipulate warehouses.</p>
+          </div>
+        </a>
+      </div>
     </div>
-  </div>
-  <div class="col">
+    <div class="col">
     <div class="card">
       <a routerLink="category" class="nav-link">
       <img src="batman.jpg" class="card-img-top" alt="...">
@@ -20,18 +24,19 @@
       </div>
       </a>
     </div>
-  </div>
-   <div class="col">
-    <div class="card">
-      <a routerLink="invoice" class="nav-link">
-      <img src="batman.jpg" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Invoices</h5>
-        <p class="card-text">Simple menu to manipulate invoices.</p>
-      </div>
-      </a>
     </div>
-  </div>
+    <div class="col">
+      <div class="card">
+        <a routerLink="invoice" class="nav-link">
+        <img src="batman.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Invoices</h5>
+          <p class="card-text">Simple menu to manipulate invoices.</p>
+        </div>
+        </a>
+      </div>
+    </div>
+  }
   <div class="col">
     <div class="card">
       <a routerLink="product" class="nav-link">
