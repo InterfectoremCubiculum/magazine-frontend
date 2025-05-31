@@ -12,16 +12,13 @@ import { RegisterDto } from '../dtos/auth/register.dto';
 })
 export class AuthService {
   private http = inject(HttpClient);
+  
   private authUrl = `${environment.apiBaseUrl}/auth`;
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
   private tokenKey = 'auth-token';
-
-  constructor() {
-    this.checkStoredAuth();
-  }
 
   login(loginData: LoginDto): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.authUrl}/login`, loginData).pipe(
@@ -89,6 +86,10 @@ export class AuthService {
   private clearAuthData(): void {
     localStorage.removeItem(this.tokenKey);
     this.currentUserSubject.next(null);
+  }
+
+  initAuthCheck(): void {
+    this.checkStoredAuth();
   }
 
   private checkStoredAuth(): void {
