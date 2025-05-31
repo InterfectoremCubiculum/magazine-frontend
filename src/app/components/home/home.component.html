@@ -25,17 +25,6 @@
       </a>
     </div>
     </div>
-    <div class="col">
-      <div class="card">
-        <a routerLink="invoice" class="nav-link">
-        <img src="batman.jpg" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Invoices</h5>
-          <p class="card-text">Simple menu to manipulate invoices.</p>
-        </div>
-        </a>
-      </div>
-    </div>
   }
   <div class="col">
     <div class="card">
@@ -48,7 +37,20 @@
       </a>
     </div>
   </div>
-    <div class="col">
+  @if (role === 'USER'){
+      <div class="col">
+      <div class="card">
+        <a routerLink="invoice" class="nav-link">
+        <img src="batman.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Invoices</h5>
+          <p class="card-text">Simple menu to manipulate invoices.</p>
+        </div>
+        </a>
+      </div>
+    </div>
+  }
+  <div class="col">
     <div class="card">
       <img src="batman.jpg" class="card-img-top" alt="...">
       <div class="card-body">

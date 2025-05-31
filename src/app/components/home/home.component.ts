@@ -10,9 +10,13 @@ import UserRoles from '../../enums/userRoles';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  role: string | null;
+  role: string | null = null;
 
   constructor(private authService: AuthService) {
-    this.role = this.authService.getRole();
+
+  }
+  async ngOnInit() {
+    const role = await this.authService.getRole();
+    this.role = role;
   }
 }

@@ -57,7 +57,6 @@ export class AuthService {
 
   validateToken(): Observable<any> {
     const token = this.getToken();
-    console.log(token);
     if (!token) {
       return throwError(() => new Error('No token available'));
     }
@@ -120,12 +119,13 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
-  getRole() {
-    if (!this.isLoggedIn()) return null;
-    const user = this.getCurrentUser();
-    return user ? user.role : null;
 
+  getRole(): Promise<userRoles | null> {
+    return this.currentUser$.pipe(
+      map(user => user?.role ?? null)
+    ).toPromise() as Promise<userRoles | null>;
   }
+
   isLoggedIn(): boolean {
     return !!this.getToken() && !!this.getCurrentUser();
   }
