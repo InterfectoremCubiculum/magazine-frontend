@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, map, catchError, throwError, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, catchError, throwError, tap, take, lastValueFrom, firstValueFrom, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { AuthResponse } from '../interfaces/AuthResponse';
 import { User } from '../interfaces/User';
@@ -88,9 +88,29 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  initAuthCheck(): void {
-    this.checkStoredAuth();
-  }
+  initAuthCheck(): Observable<boolean> {
+    const token = this.getToken();
+    if (!token) {
+      return of(false);
+    }
+
+    return this.validateToken().pipe(
+      tap(response => {
+        const user: User = {
+          id: response.userId,
+          username: response.username,
+          email: '',
+          role: response.role as userRoles
+        };
+        this.currentUserSubject.next(user);
+      }),
+      map(() => true),
+      catchError(error => {
+        this.clearAuthData();
+        return of(false);
+      })
+    );
+}
 
   private checkStoredAuth(): void {
     const token = this.getToken();
@@ -120,10 +140,11 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  getRole(): Promise<userRoles | null> {
-    return this.currentUser$.pipe(
-      map(user => user?.role ?? null)
-    ).toPromise() as Promise<userRoles | null>;
+  getRole(): Observable<userRoles | null> {
+    const role = this.currentUser$.pipe(
+      map(user => user ? user.role : null),
+    );
+    return role;
   }
 
   isLoggedIn(): boolean {

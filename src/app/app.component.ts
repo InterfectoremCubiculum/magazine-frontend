@@ -11,9 +11,4 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'magazine-frontend';
-  constructor(private authService: AuthService) {}
-
-  ngOnInit(): void {
-    this.authService.initAuthCheck();
-  }
 }

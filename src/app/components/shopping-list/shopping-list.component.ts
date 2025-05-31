@@ -8,7 +8,6 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { OrderService } from '../../services/order.service';
 import { CreateOrderRequestDto } from '../../dtos/order/CreateOrderRequestDto';
-import { Product } from '../../interfaces/Product';
 import { ProductOrderDto } from '../../dtos/order/ProductOrderDto';
 
 @Component({

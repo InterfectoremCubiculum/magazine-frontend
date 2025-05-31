@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import UserRoles from '../../enums/userRoles';
+import { firstValueFrom } from 'rxjs';
+import userRoles from '../../enums/userRoles';
 
 @Component({
   selector: 'app-home',
@@ -9,14 +10,14 @@ import UserRoles from '../../enums/userRoles';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
-  role: string | null = null;
+export class HomeComponent implements OnInit {
+  role: userRoles | null = null;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService) {}
 
-  }
   async ngOnInit() {
-    const role = await this.authService.getRole();
-    this.role = role;
+    this.role = await firstValueFrom(this.authService.getRole());
   }
 }
+
+
