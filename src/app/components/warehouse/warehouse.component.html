@@ -69,7 +69,10 @@
           </td>
         }
         <td style="width: 3rem;">
-          <p-button icon="pi pi-pencil" size="small" severity="secondary" [rounded]="true" [outlined]="true" (click)="editProduct(rowData)" />
+          <div class="d-flex">
+            <p-button class="pe-2" icon="pi pi-arrow-circle-up" size="small" severity="secondary" [rounded]="true" [outlined]="true" (click)="showWarehouse(rowData)" />
+            <p-button icon="pi pi-pencil" size="small" severity="secondary" [rounded]="true" [outlined]="true" (click)="editProduct(rowData)" />
+          </div>
         </td>
       </tr>
     </ng-template>

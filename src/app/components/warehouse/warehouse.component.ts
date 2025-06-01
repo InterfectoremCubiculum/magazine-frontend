@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { Toast } from 'primeng/toast';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-warehouse',
   imports: [CommonModule, Toast, TableModule, InputTextModule, FormsModule, IconFieldModule, IconField, InputIcon, ButtonModule, ToolbarModule, ConfirmDialog, Dialog],
@@ -42,6 +43,7 @@ export class WarehouseComponent implements OnInit {
     private warehouseService: WarehouseService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
+    private router: Router
   ) { }
   ngOnInit(): void {
     this.fetchData();
@@ -126,6 +128,9 @@ export class WarehouseComponent implements OnInit {
     this.submitted = false;
   }
 
+  showWarehouse(warehouse: Warehouse) {
+      this.router.navigate(['warehouse/', warehouse.id]);
+  }
   editProduct(warehouse: Warehouse) {
     this.warehouse = warehouse;
     this.warehouseDialog = true;
