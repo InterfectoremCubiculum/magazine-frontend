@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { catchError, Observable, throwError } from 'rxjs';
 import { CreateOrderRequestDto } from '../dtos/order/CreateOrderRequestDto';
+import { Order } from '../interfaces/Order';
 
 @Injectable({
   providedIn: 'root'
@@ -18,5 +19,8 @@ export class OrderService {
           return throwError(() => new Error('Failed to make order'));
         })
       );;
+  }
+  getAllByUser(userId: number): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.ordersUrl}/getAllOrdersByUser/${userId}`);
   }
 }

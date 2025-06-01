@@ -9,6 +9,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ShoppingListComponent } from './components/shopping-list/shopping-list.component';
 import { AuthGuard } from './guards/auth.guard';
 import UserRoles from './enums/userRoles';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -20,14 +21,20 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE] }
     },
-    { 
-        path: 'category', 
-        component: CategoryComponent, 
+    {
+        path: 'category',
+        component: CategoryComponent,
         canActivate: [AuthGuard],
         data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE] }
     },
-    { 
-        path: 'invoice', 
+    {
+        path: 'order-history',
+        component: OrderHistoryComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE] }
+    },
+    {
+        path: 'invoice',
         component: InvoiceComponent,
         canActivate: [AuthGuard],
         data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE] }

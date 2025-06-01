@@ -1,0 +1,17 @@
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="!loading && orders.length === 0">No orders found.</div>
+<div *ngIf="!loading && orders.length > 0">
+  <div *ngFor="let order of orders" class="card mb-3">
+    <div class="card-header">
+      Order #{{ order.id }}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Products:</h5>
+      <ul>
+        <li *ngFor="let po of order.productOrders">
+          {{ po.product.name }} - Quantity: {{ po.quantity }} - Price: {{ po.product.price | currency }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
