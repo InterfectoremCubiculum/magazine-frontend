@@ -110,27 +110,8 @@ export class AuthService {
         return of(false);
       })
     );
-}
-
-  private checkStoredAuth(): void {
-    const token = this.getToken();
-    if (token) {
-      this.validateToken().subscribe({
-        next: (response) => {
-          const user: User = {
-            id: response.userId,
-            username: response.username,
-            email: '',
-            role: response.role as userRoles
-          };
-          this.currentUserSubject.next(user);
-        },
-        error: () => {
-          this.clearAuthData();
-        }
-      });
-    }
   }
+
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);

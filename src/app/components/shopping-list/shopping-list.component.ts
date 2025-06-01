@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { OrderService } from '../../services/order.service';
 import { CreateOrderRequestDto } from '../../dtos/order/CreateOrderRequestDto';
 import { ProductOrderDto } from '../../dtos/order/ProductOrderDto';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-shopping-list',
@@ -18,7 +19,7 @@ import { ProductOrderDto } from '../../dtos/order/ProductOrderDto';
 })
 export class ShoppingListComponent {
 
-  constructor(private shoppingService: ShoppingService, private orderService: OrderService) {}
+  constructor(private shoppingService: ShoppingService, private orderService: OrderService, private authService: AuthService) {}
   products: any[] = [];
   cols: any[] = [];
   
@@ -57,7 +58,8 @@ export class ShoppingListComponent {
     });
 
     request.products = productsInOrder;
-    request.customerId = 1; // Assuming a static customer ID for this example
+    request.customerId = this.authService.getCurrentUser()?.id;
+    console.log('Order Request:',  this.authService.getCurrentUser()?.id);
     this.orderService.makeOrder(request).subscribe({
       next: (response) => {
         this.shoppingService.clearList();
