@@ -11,6 +11,7 @@ import { AuthGuard } from './guards/auth.guard';
 import UserRoles from './enums/userRoles';
 import { WarehouseItemComponent } from './components/warehouse-item/warehouse-item.component';
 import { AuthResolver } from './resolver/auth-resolver.resolver';
+import { OrderHistoryComponent } from './components/order-history/order-history.component';
 
 export const routes: Routes = [
     { 
@@ -42,7 +43,7 @@ export const routes: Routes = [
         path: 'order-history',
         component: OrderHistoryComponent,
         canActivate: [AuthGuard],
-        data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE] }
+        data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE, UserRoles.USER] }
     },
     {
         path: 'invoice',
