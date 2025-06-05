@@ -1,0 +1,197 @@
+<div class="address-management">
+  <div class="header">
+    <h2>Moje adresy</h2>
+    <p-button
+      label="Dodaj nowy adres"
+      icon="pi pi-plus"
+      (click)="openDialog()"
+      styleClass="p-button-success">
+    </p-button>
+  </div>
+
+  <div class="addresses-grid" *ngIf="addresses.length > 0">
+    <p-card
+      *ngFor="let address of addresses"
+      class="address-card"
+      [ngClass]="{ 'default-address': address.isDefault }">
+
+      <div class="address-content">
+        <div class="address-details">
+          <div class="address-name-header">
+            <h4>{{address.name}}</h4>
+            <div class="default-badge" *ngIf="address.isDefault">
+              <i class="pi pi-star"></i> Domyślny
+            </div>
+          </div>
+          <p><strong>{{address.firstName}} {{address.lastName}}</strong></p>
+          <p>{{address.street}} {{address.houseNumber}}<span *ngIf="address.apartmentNumber">/{{address.apartmentNumber}}</span></p>
+          <p>{{address.postalCode}} {{address.city}}</p>
+          <p>{{address.country}}</p>
+          <p *ngIf="address.phoneNumber"><i class="pi pi-phone"></i> {{address.phoneNumber}}</p>
+        </div>
+
+        <div class="address-actions">
+          <p-button
+            icon="pi pi-pencil"
+            (click)="editAddress(address)"
+            styleClass="p-button-text p-button-plain"
+            pTooltip="Edytuj">
+          </p-button>
+
+          <p-button
+            *ngIf="!address.isDefault"
+            icon="pi pi-star"
+            (click)="setAsDefault(address)"
+            styleClass="p-button-text p-button-plain"
+            pTooltip="Ustaw jako domyślny">
+          </p-button>
+
+          <p-button
+            icon="pi pi-trash"
+            (click)="deleteAddress(address)"
+            styleClass="p-button-text p-button-danger"
+            pTooltip="Usuń">
+          </p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="no-addresses" *ngIf="addresses.length === 0">
+    <i class="pi pi-home" style="font-size: 4rem; color: #ccc;"></i>
+    <h3>Brak adresów</h3>
+    <p>Dodaj swój pierwszy adres do wysyłki</p>
+  </div>
+
+  <p-dialog
+    [header]="isEditing ? 'Edytuj adres' : 'Dodaj nowy adres'"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [style]="{width: '600px'}"
+    [draggable]="false"
+    [resizable]="false">
+
+    <form [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="name">Nazwa adresu *</label>
+          <input
+            pInputText
+            id="name"
+            formControlName="name"
+            placeholder="np. Dom, Praca, Rodzice"
+            class="w-full">
+        </div>
+
+        <div class="form-row">
+          <div class="form-field flex-1">
+            <label for="firstName">Imię *</label>
+            <input
+              pInputText
+              id="firstName"
+              formControlName="firstName"
+              class="w-full">
+          </div>
+
+          <div class="form-field flex-1">
+            <label for="lastName">Nazwisko *</label>
+            <input
+              pInputText
+              id="lastName"
+              formControlName="lastName"
+              class="w-full">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="street">Ulica *</label>
+          <input
+            pInputText
+            id="street"
+            formControlName="street"
+            class="w-full">
+        </div>
+
+        <div class="form-row">
+          <div class="form-field flex-1">
+            <label for="houseNumber">Nr domu *</label>
+            <input
+              pInputText
+              id="houseNumber"
+              formControlName="houseNumber"
+              class="w-full">
+          </div>
+
+          <div class="form-field flex-1">
+            <label for="apartmentNumber">Nr mieszkania</label>
+            <input
+              pInputText
+              id="apartmentNumber"
+              formControlName="apartmentNumber"
+              class="w-full">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field flex-0-7">
+            <label for="postalCode">Kod pocztowy *</label>
+            <input
+              pInputText
+              id="postalCode"
+              formControlName="postalCode"
+              placeholder="00-000"
+              class="w-full">
+          </div>
+
+          <div class="form-field flex-1-3">
+            <label for="city">Miasto *</label>
+            <input
+              pInputText
+              id="city"
+              formControlName="city"
+              class="w-full">
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="country">Kraj *</label>
+          <input
+            pInputText
+            id="country"
+            formControlName="country"
+            class="w-full">
+        </div>
+
+        <div class="form-field">
+          <label for="phoneNumber">Numer telefonu</label>
+          <input
+            pInputText
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            placeholder="+48 123 456 789"
+            class="w-full">
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <p-button
+          type="button"
+          label="Anuluj"
+          icon="pi pi-times"
+          (click)="closeDialog()"
+          styleClass="p-button-text">
+        </p-button>
+
+        <p-button
+          type="submit"
+          [label]="isEditing ? 'Aktualizuj' : 'Dodaj'"
+          icon="pi pi-check"
+          styleClass="p-button-success">
+        </p-button>
+      </div>
+    </form>
+  </p-dialog>
+
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+</div>

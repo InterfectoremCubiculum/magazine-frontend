@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { InvoiceService } from '../../services/invoice.service';
 import { CustomerService } from '../../services/customer.service';
 import { Invoice } from '../../interfaces/Invoice';
-import { Customer } from '../../interfaces/Customer';
+import { InvoiceCustomer } from '../../interfaces/InvoiceCustomer';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -37,7 +37,7 @@ export class InvoiceComponent implements OnInit {
     paymentDueDate: '',
     paymentMethod: ''
   };
-  customers: Customer[] = [];
+  customers: InvoiceCustomer[] = [];
   paymentMethods = [
     { label: 'Transfer', value: 'Transfer' },
     { label: 'BLIK', value: 'BLIK' },
@@ -75,7 +75,14 @@ export class InvoiceComponent implements OnInit {
 
   loadCustomers(): void {
     this.customerService.getAll().subscribe({
-      next: (data) => this.customers = data
+      next: (data) => {
+        this.customers = data.map(customer => ({
+          id: customer.id,
+          name: customer.name,
+          address: `${customer.street} ${customer.houseNumber}, ${customer.city}`,
+          phone: customer.phoneNumber
+        }));
+      }
     });
   }
 

@@ -1,8 +1,8 @@
-import { Customer } from "./Customer";
+import { InvoiceCustomer } from "./InvoiceCustomer";
 
 export interface Invoice {
   id: number | null;
-  customer: Customer;
+  customer: InvoiceCustomer;
   issueDate: string;        
   saleDate: string;
   paymentDueDate: string;

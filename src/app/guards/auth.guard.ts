@@ -9,18 +9,24 @@ import { firstValueFrom } from 'rxjs';
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router ) {}
 
-  ngOnInit(): void {
-    this.authService.initAuthCheck();
-  }
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const expectedRoles = route.data['roles'] as string[];
+    const isAuthenticated = await firstValueFrom(this.authService.initAuthCheck());
 
-    const role = await firstValueFrom(this.authService.getRole());
-    if (expectedRoles && (!role || !expectedRoles.includes(role))) {
-      this.router.navigate(['/']);
+    if (!isAuthenticated) {
+      this.router.navigate(['/login']);
       return false;
     }
-    
+
+    const expectedRoles = route.data['roles'] as string[];
+
+    if (expectedRoles && expectedRoles.length > 0) {
+      const role = await firstValueFrom(this.authService.getRole());
+      if (!role || !expectedRoles.includes(role)) {
+        this.router.navigate(['/']);
+        return false;
+      }
+    }
+
     return true;
   }
 }

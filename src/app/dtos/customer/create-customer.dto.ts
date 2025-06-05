@@ -1,6 +1,4 @@
-export interface Customer {
-  id: number | null;
-  userId: number;
+export interface CreateCustomerDto {
   name: string;
   firstName: string;
   lastName: string;
@@ -12,6 +10,4 @@ export interface Customer {
   country: string;
   phoneNumber?: string;
   isDefault?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+} 

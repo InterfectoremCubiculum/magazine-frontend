@@ -12,6 +12,7 @@ import UserRoles from './enums/userRoles';
 import { WarehouseItemComponent } from './components/warehouse-item/warehouse-item.component';
 import { AuthResolver } from './resolver/auth-resolver.resolver';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
+import { AddressManagementComponent } from './components/address-management/address-management.component';
 
 export const routes: Routes = [
     { 
@@ -21,6 +22,12 @@ export const routes: Routes = [
     },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
+    {
+        path: 'addresses',
+        component: AddressManagementComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [UserRoles.ADMIN, UserRoles.EMPLOYEE, UserRoles.USER] }
+    },
     {
         path: 'warehouse',
         component: WarehouseComponent,

@@ -79,7 +79,7 @@ export class AuthService {
       email: '',
       role: authResponse.role as userRoles
     };
-
+    
     this.currentUserSubject.next(user);
   }
 
@@ -90,6 +90,7 @@ export class AuthService {
 
   initAuthCheck(): Observable<boolean> {
     const token = this.getToken();
+    
     if (!token) {
       return of(false);
     }
@@ -128,8 +129,14 @@ export class AuthService {
     return role;
   }
 
+  hasValidToken(): boolean {
+    return !!this.getToken();
+  }
+
   isLoggedIn(): boolean {
-    return !!this.getToken() && !!this.getCurrentUser();
+    const hasToken = this.hasValidToken();
+    const hasUser = !!this.getCurrentUser();
+    return hasToken && hasUser;
   }
 
   isAdmin(): boolean {
