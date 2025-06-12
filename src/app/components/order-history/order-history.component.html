@@ -8,9 +8,12 @@
     <div class="card-body">
       <h5 class="card-title">Products:</h5>
       <ul>
-        <li *ngFor="let po of order.productOrders">
-          {{ po.product.name }} - Quantity: {{ po.quantity }} - Price: {{ po.product.price | currency }}
-        </li>
+        @for (po of order.productOrderHistoryDto; track $index) 
+        {
+          <li>
+            {{ po.name }} - Quantity: {{ po.quantity }} - Price: {{ po.unitPrice | currency }}
+          </li>
+        }
       </ul>
     </div>
   </div>

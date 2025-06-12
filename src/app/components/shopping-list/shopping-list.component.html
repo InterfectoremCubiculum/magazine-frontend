@@ -1,4 +1,36 @@
-<div class="card">
+<div class="card mb-2 p-1">
+    <h4 class="mt-3 ms-3 m-2">Dane odbiorcy przesyłki</h4>
+    <p-tabs value={{defaultAddressId()}} scrollable>
+        <p-tablist>
+            <ng-template #previcon>
+                <i class="pi pi-minus"></i>
+            </ng-template>
+            @for (address of addresses; track address.id) {
+                <p-tab value={{address.id}} class="flex items-center !gap-2" (click)="setAddressId(address.id ?? null)">
+                    <span class="font-bold whitespace-nowrap">{{address.name}}</span>
+                </p-tab>
+            }
+            <ng-template #nexticon>
+                <i class="pi pi-plus"></i>
+            </ng-template>
+        </p-tablist>
+        <p-tabpanels>
+            @for (address of addresses; track address.id) {
+                <p-tabpanel value={{address.id}}>
+                    <div class="card border-3 shadow">
+                        <div class="card-body">
+                            <h5>{{address.firstName}} {{address.lastName}}</h5>
+                            <h6>{{address.street}} {{address.houseNumber}}</h6>
+                            <h6>{{address.postalCode}} {{address.city}}</h6>
+                            <h6>Telefon: {{address.phoneNumber}}</h6>
+                        </div>
+                    </div>
+                </p-tabpanel>
+            }
+        </p-tabpanels>
+    </p-tabs>
+</div>
+<div class="card p-1 pb-0">
     <p-table [columns]="cols" [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template #header let-columns>
             <tr>
@@ -39,6 +71,6 @@
         <h4>{{ totalPrice | currency:'PLN' }}</h4>
     </div>
     <div class="d-grid col-6 mx-auto">
-        <button class="btn btn-primary" (click)="onMakeOrder()">Make order</button>
+        <button class="btn btn-primary" [disabled]="!shoppingList.length" (click)="onMakeOrder()">Make order</button>
     </div>
 </div>

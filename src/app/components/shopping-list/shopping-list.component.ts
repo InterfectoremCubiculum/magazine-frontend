@@ -10,23 +10,40 @@ import { OrderService } from '../../services/order.service';
 import { CreateOrderRequestDto } from '../../dtos/order/CreateOrderRequestDto';
 import { ProductOrderDto } from '../../dtos/order/ProductOrderDto';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { CustomerService } from '../../services/customer.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Customer } from '../../interfaces/Customer';
+import { MessageService } from 'primeng/api';
+import { TabsModule } from 'primeng/tabs';
 
 @Component({
   selector: 'app-shopping-list',
-  imports: [TableModule, CommonModule, InputNumber, FormsModule, ButtonModule],
+  imports: [TableModule, CommonModule, InputNumber, FormsModule, ButtonModule, TabsModule, CommonModule],
   templateUrl: './shopping-list.component.html',
-  styleUrl: './shopping-list.component.scss'
+  styleUrl: './shopping-list.component.scss',
+  providers: [MessageService],
 })
 export class ShoppingListComponent {
 
-  constructor(private shoppingService: ShoppingService, private orderService: OrderService, private authService: AuthService) {}
+  constructor(
+    private shoppingService: ShoppingService, 
+    private orderService: OrderService, 
+    private customerService: CustomerService,
+    private authService: AuthService,
+    private router: Router,
+    private messageService: MessageService
+  ) {}
   products: any[] = [];
   cols: any[] = [];
-  
+  addresses: Customer[] = [];
+
   shoppingList: ShoppingList[] = [];
   totalPrice: number = 0;
-  
+  addressId: number | null = null;
+
   ngOnInit() {
+    this.loadAddresses();
     this.shoppingList = this.shoppingService.getList();
 
     this.products = this.shoppingList.map(item => ({
@@ -46,6 +63,29 @@ export class ShoppingListComponent {
     this.summarizePrice();
   }
 
+loadAddresses(): void {
+    this.customerService.getMyAddresses().subscribe({
+      next: (addresses: Customer[]) => {
+        this.addresses = addresses;
+      },
+      error: (error: HttpErrorResponse) => {
+        let errorMessage = 'Nie udało się załadować adresów';
+        if (error.status === 401) {
+          errorMessage = 'Sesja wygasła. Zaloguj się ponownie.';
+        } else if (error.status === 403) {
+          errorMessage = 'Brak uprawnień do przeglądania adresów';
+        } else if (error.status === 0) {
+          errorMessage = 'Brak połączenia z serwerem';
+        }
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Błąd',
+          detail: errorMessage
+        });
+      }
+    });
+  }
   onMakeOrder() {
     let request: CreateOrderRequestDto = new CreateOrderRequestDto();
     let productsInOrder: ProductOrderDto[] = [];
@@ -58,8 +98,7 @@ export class ShoppingListComponent {
     });
 
     request.products = productsInOrder;
-    request.customerId = this.authService.getCurrentUser()?.id;
-    console.log('Order Request:',  this.authService.getCurrentUser()?.id);
+    request.customerId = this.addressId ?? this.defaultAddressId();
     this.orderService.makeOrder(request).subscribe({
       next: (response) => {
         this.shoppingService.clearList();
@@ -70,11 +109,17 @@ export class ShoppingListComponent {
       error: (error) => {
         console.error('Error making order', error);
       }});
+
+    this.router.navigate(['/order-history']);
   }
 
   onDeleteProduct(id: number) {
     this.products = this.products.filter(product => product.id !== id);
     this.shoppingService.setList(this.shoppingList.filter(item => item.product.id !== id));
+
+    if (this.products.length === 0) {
+      this.router.navigate(['/product']);
+    }
   }
 
   summarizePrice() {
@@ -93,6 +138,20 @@ export class ShoppingListComponent {
     }
     this.shoppingService.setList(this.shoppingList);
     this.summarizePrice();
+  }
+
+  defaultAddressId(): number {
+    if (this.addresses.length > 0) {
+      const defaultAddress = this.addresses.find(address => address.isDefault);
+      if (defaultAddress) {
+        return defaultAddress.id ?? 0 ;
+      }
+    }
+    return 0;
+  }
+
+  setAddressId(addressId: number | null) {
+    this.addressId = addressId;
   }
 }
 
